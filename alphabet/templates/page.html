@@ -1,65 +1,70 @@
 <!doctype html>
-<html> 
-    <header> 
-        <meta charset="utf-8" />
-        <h1> AlphaBet </h1>
-        <aside> 
-        <!-- formulaire de connexion -->
-            <form action="" method="post" id="log_in" name="log_in">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password">
-                <input type="submit" name="submit_connexion" value="Login" class="button">
-            </form>
-        </aside> 
-    </header>
+<html>
+  <head>
+    <meta charset="utf-8" />
+  </head>
+
+  <header>
+    <h1>AlphaBet</h1>
+    <aside>
+      <form action="" method="post">
+        <label>Identifiant
+          <input name="username" />
+        </label>
+        <label>Mot de passe
+          <input type="password" name="password" />
+        </label>
+        <input type="submit" value="Se connecter" />
+      </form>
+    </aside>
+  </header>
     
-    <main>
-        <nav>
-            <!-- Menu déroulant pour la journée sélectionnée -->
-            <label for="idmatchday">Journée</label>
-                    <form action="" method="post" id="idmatchday" name="idmatchday">
-                           <select name="choice_matchday" id="idmatchday">
-                           <option value="1">Valeur 1</option>
-                           <option value="2">Valeur 2</option>
-                           <option value="3">Valeur 3</option>
-                           <option value="4">Valeur 4</option>
-                           </select>
-                           <input type="submit" name="submit_matchday" value="Envoyer" class="button">
-                    </form>
-                 
-            <!-- Menu déroulant pour l'utilisateur sélectionné -->
-            <label for="idusername">Utilisateur:</label>
-                    <form action=# method="post" id="idusername" name="idusername">
-                           <select name="choice_username" id="idusername">
-                           <option value="1">Valeur 1</option>
-                           <option value="2">Valeur 2</option>
-                           <option value="3">Valeur 3</option>
-                           <option value="4">Valeur 4</option>
-                           </select>
-                           <input type="submit" name="submit_username" value="Envoyer" class="button">
-                    </form>
-        </nav>
-        <h2> Calendrier et Paris en ligne pour la Ligue 1 de 2016-2017</h2>
-        <h3>Samedi 15 Avril 2017</h3> <!-- récupérer date-->
-        <h4> 
-                <form action="" method="post" id="resultChoice">  <!-- Récupérer match correspodant à la date -->
-                    <tr>
-                        <th id="time">20h45</th>
-                        <th id="homeTeamName">Lyon</th>
-                        <th id="result">6 - 1</th>      
-                        <th id="awayTeamName">Nice</th>
-                    </tr>
-                    <label for id="homeTeamWin">1</label>
-                    <input type="radio" name="result" value="hometeam" id="homeTeamWin" /> 
-                    <label for id="drawMatch">N</label>
-                    <input type="radio" name="result" value="draw" id="drawMatch" /> 
-                    <label for id="awayTeamWin">2</label>
-                    <input type="radio" name="result" value="awayTeam" id="awayTeamWin" /> 
-                    <input type="submit" name="submit_bet" value="Envoyer" class="button">
-                </form><br>
-        </h4>
-       
-    </main>
+  <main>
+    <nav>
+      <form action="" method="post">
+        <label>Journée
+          <select name="matchday">
+            <option value="1">Journée 1</option>
+            <option value="2">Journée 2</option>
+            <option value="3">Journée 3</option>
+            <option value="4">Journée 4</option>
+          </select>
+        </label>
+        <label>Utilisateur
+          <select name="username">
+            <option value="1">Utilisateur 1</option>
+            <option value="2">Utilisateur 2</option>
+            <option value="3">Utilisateur 3</option>
+            <option value="4">Utilisateur 4</option>
+          </select>
+        </label>
+        <input type="submit" value="Envoyer">
+      </form>
+    </nav>
+
+    <h2>Journée 1 de la Ligue 1 de 2016-2017</h2>
+    <h3>Samedi 15 Avril 2017</h3>
+    <h4>Lyon - Nice</h4>
+    <dl>
+      <dt>Heure</dt>
+      <dd>20h45</dd>
+      <dt>Score</dt>
+      <dd>6 - 1</dd>
+    </dl>
+    <form action="" method="post">
+      <label>
+        <input type="radio" name="result" value="home" />
+        Domicile
+      </label>
+      <label>
+        <input type="radio" name="result" value="draw" />
+        Nul
+      </label>
+      <label>
+        <input type="radio" name="result" value="away" />
+        Extérieur
+      </label>
+      <input type="submit" value="Envoyer">
+    </form>
+  </main>
 </html>

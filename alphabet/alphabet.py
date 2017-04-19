@@ -57,7 +57,11 @@ def initdb_command():
     """Initializes the database."""
     init_db()
     print('Initialized the database.')
-   
+
+@app.route('/')
+def index():
+	return render_template('page.html') 
+
 '''@app.route('/matchday/<id>', methods=['POST'])
 def edit(id):
     if not session.get('logged_in'):

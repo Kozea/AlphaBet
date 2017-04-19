@@ -60,7 +60,7 @@ def initdb_command():
 
 @app.route('/')
 def index():
-	return render_template('page.html') 
+	return render_template('page.html')
 
 '''@app.route('/matchday/<id>', methods=['POST'])
 def edit(id):

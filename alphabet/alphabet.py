@@ -77,11 +77,11 @@ def login():
   	  session['logged_in'] = True
     else:
       flash('Mauvais identifiant ou mot de passe')
-  return index()
+  return redirect(url_for('index'))
 
 
 @app.route('/logout')
 def logout():
     session['logged_in'] = False
     flash('Vous êtes déconnectés !')
-    return index()
+    return redirect(url_for('index'))

@@ -11,7 +11,10 @@ app.config.from_object(__name__) # load config from this file , alphabet.py
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'alphabet.db')
+    DATABASE=os.path.join(app.root_path, 'alphabet.db'),
+    SECRET_KEY='development key',
+    USERNAME='admin',
+    PASSWORD='default'
 ))
 app.config.from_envvar('ALPHABET_SETTINGS', silent=True)
 
@@ -62,29 +65,21 @@ def index():
     response_maindatas = json.loads(connection_maindatas.getresponse().read().decode())
     response_otherdatas = json.loads(connection_otherdatas.getresponse().read().decode())
     return render_template('page.html', currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'],fixtures_datas=response_otherdatas['fixtures'])
-    if not session.get('logged_in'):
-	    return render_template('page.html')
-    else:
-	    return "Hello Boss!"
 
 
 @app.route('/login', methods=['GET','POST'])
 def login():
-  db = get_db().cursor()
-  error = None
   if request.method == 'POST':
-    if request.form['username'] != db.execute('SELECT username FROM users WHERE username=?', (request.form['username'],)).fetchone()['username']:
-      error = 'Invalid username. Username text was: ' + request.form['username']
-    elif request.form['password'] != db.execute('SELECT password FROM users WHERE username=? AND password=?', (request.form['username'], request.form['password'],)).fetchone():
-      error = 'Invalid password'
-    else:
-      session['logged_in'] = True
-      flash('You were logged in')
-      return redirect(url_for('index'))
-  return render_template('page.html', error=error)
+    db = get_db()
+    cursor = db.execute('select username from users where username=? and password=?', [request.form['username'], request.form['password']])
+    users = cursor.fetchall()
+    if users:
+  	  session['logged_in'] = True
+  return index()
 
 
 @app.route('/logout')
 def logout():
     session['logged_in'] = False
+    flash('You were logged out')
     return index()

@@ -5,21 +5,27 @@
   </head>
 
   <header>
-    <h1>AlphaBet</h1>
+    <h1>AlphaBet {{user}}</h1>
     <aside>
       {% if session['logged_in'] %}
-      <p>You're logged in already !</p>
-			{% else %}
-      <form action="/login" method="post">
-        <label>Identifiant
-          <input name="username" />
-        </label>
-        <label>Mot de passe
-          <input type="password" name="password" />
-        </label>
-        <input type="submit" value="Se connecter" />
-      </form>
-      {% endif %}
+        <p>You're logged in already !</p>
+        <form action="/logout">
+          <input type="submit" value="Se deconnecter" />
+        </form>
+			{% else %}  
+        {% for message in get_flashed_messages() %}
+          <div class=flash>{{ message }}</div>
+        {% endfor %}
+        <form action="/login" method="post">
+          <label>Identifiant
+            <input name="username" />
+          </label>
+          <label>Mot de passe
+            <input type="password" name="password" />
+          </label>
+          <input type="submit" value="Se connecter" />
+        </form>
+        {% endif %}
     </aside>
   </header>
     

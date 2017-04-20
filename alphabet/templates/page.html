@@ -31,37 +31,33 @@
     
   <main>
     <nav>
-      <form action="" method="post">
+      <form method="get">
         <label>Journée
           <select name="matchday">
-            <option value="1">Journée 1</option>
-            <option value="2">Journée 2</option>
-            <option value="3">Journée 3</option>
-            <option value="4">Journée 4</option>
+          {% for i in range(1,numberofmatchdays+1) %}
+            <option value="{{ i }}">Journée {{ i }}</option>
+          {% endfor %}
           </select>
         </label>
         <label>Utilisateur
           <select name="username">
-            <option value="1">Utilisateur 1</option>
-            <option value="2">Utilisateur 2</option>
-            <option value="3">Utilisateur 3</option>
-            <option value="4">Utilisateur 4</option>
+            <option value="1">Utilisateur</option>
           </select>
         </label>
         <input type="submit" value="Envoyer">
       </form>
     </nav>
-    <h2>Journée {{currentmatchday}} de la {{competitions}}</h2>
+    <h2>Journée {{matchdaynumber}} de la {{competitions}}</h2>
     {% for fixture_data in fixtures_datas %}
+        {% if fixture_data["matchday"] == matchdaynumber %}
     <h3>{{fixture_data["date"]}}</h3>
-    <h4>{{fixture_data["homeTeamName"]}}</h4>
+    <h4>{{fixture_data["homeTeamName"]}} - {{fixture_data["awayTeamName"]}}</h4>
     <dl>
       <dt>Heure</dt>
       <dd>{{fixture_data["date"]}}</dd>
       <dt>Score</dt>
       <dd>{{fixture_data["result"]["goalsHomeTeam"]}} - {{fixture_data["result"]["goalsAwayTeam"]}}</dd>
     </dl>
-    {% endfor %}
     <form action="" method="post">
       <label>
         <input type="radio" name="result" value="home" />
@@ -77,5 +73,7 @@
       </label>
       <input type="submit" value="Envoyer">
     </form>
+     {% endif %}
+    {% endfor %}
   </main>
 </html>

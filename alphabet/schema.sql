@@ -18,4 +18,9 @@ create table user_bets
   CONSTRAINT couple_unique UNIQUE (u_id, match_id)
 );
 
-
+INSERT INTO users (username, password) 
+VALUES 
+('Romain', 'Rouvier'),
+('Guillaume', 'Ayoub'),
+('Maelle', 'Pinto'),
+('John Doe', 'lemotdepasse'); 

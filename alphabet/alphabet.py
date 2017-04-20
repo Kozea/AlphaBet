@@ -12,5 +12,11 @@ app.config.from_object(__name__) # load config from this file , alphabet.py
 
 @app.route('/')
 def index():
-	return render_template('page.html')
-
+    connection_maindatas = http.client.HTTPConnection('api.football-data.org')
+    connection_otherdatas = http.client.HTTPConnection('api.football-data.org')
+    headers = { 'X-Auth-Token': '1e3a1eef83194d64a62b7faaead5fe3b', 'X-Response-Control': 'minified' }
+    connection_maindatas.request('GET', '/v1/competitions/434', None, headers )
+    connection_otherdatas.request('GET', '/v1/competitions/434/fixtures', None, headers )
+    response_maindatas = json.loads(connection_maindatas.getresponse().read().decode())
+    response_otherdatas = json.loads(connection_otherdatas.getresponse().read().decode())
+    return render_template('page.html', currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'],fixtures_datas=response_otherdatas['fixtures'])

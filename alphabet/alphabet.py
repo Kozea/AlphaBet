@@ -75,11 +75,13 @@ def login():
     users = cursor.fetchall()
     if users:
   	  session['logged_in'] = True
+    else:
+      flash('Mauvais identifiant ou mot de passe')
   return index()
 
 
 @app.route('/logout')
 def logout():
     session['logged_in'] = False
-    flash('You were logged out')
+    flash('Vous êtes déconnectés !')
     return index()

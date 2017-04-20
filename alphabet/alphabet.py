@@ -54,4 +54,29 @@ def initdb_command():
 
 @app.route('/')
 def index():
-	return render_template('page.html')
+    if not session.get('logged_in'):
+	    return render_template('page.html')
+    else:
+	    return "Hello Boss!"
+
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+  db = get_db().cursor()
+  error = None
+  if request.method == 'POST':
+    if request.form['username'] != db.execute('SELECT username FROM users WHERE username=?', (request.form['username'],)).fetchone()['username']:
+      error = 'Invalid username. Username text was: ' + request.form['username']
+    elif request.form['password'] != db.execute('SELECT password FROM users WHERE username=? AND password=?', (request.form['username'], request.form['password'],)).fetchone():
+      error = 'Invalid password'
+    else:
+      session['logged_in'] = True
+      flash('You were logged in')
+      return redirect(url_for('index'))
+  return render_template('page.html', error=error)
+
+
+@app.route('/logout')
+def logout():
+    session['logged_in'] = False
+    return index()

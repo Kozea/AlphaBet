@@ -75,11 +75,11 @@ def login():
     users = cursor.fetchall()
     if users:
   	  session['logged_in'] = True
-  return index()
+  return redirect(url_for('index'))
 
 
 @app.route('/logout')
 def logout():
     session['logged_in'] = False
     flash('You were logged out')
-    return index()
+    return redirect(url_for('index'))

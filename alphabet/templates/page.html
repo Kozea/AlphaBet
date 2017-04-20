@@ -21,7 +21,7 @@
     
   <main>
     <nav>
-      <form action="" method="post">
+      <form method="get">
         <label>Journée
           <select name="matchday">
           {% for i in range(1,numberofmatchdays+1) %}
@@ -31,17 +31,15 @@
         </label>
         <label>Utilisateur
           <select name="username">
-          {% for fixture_data in fixtures_datas %}
             <option value="1">Utilisateur</option>
-          {% endfor %} 
           </select>
         </label>
         <input type="submit" value="Envoyer">
       </form>
     </nav>
-    <h2>Journée {{currentmatchday}} de la {{competitions}}</h2>
+    <h2>Journée {{matchdaynumber}} de la {{competitions}}</h2>
     {% for fixture_data in fixtures_datas %}
-        {% if fixture_data["matchday"] == currentmatchday %}
+        {% if fixture_data["matchday"] == matchdaynumber %}
     <h3>{{fixture_data["date"]}}</h3>
     <h4>{{fixture_data["homeTeamName"]}} - {{fixture_data["awayTeamName"]}}</h4>
     <dl>

@@ -45,16 +45,17 @@
         <input type="submit" value="Envoyer">
       </form>
     </nav>
-
-    <h2>Journée 1 de la Ligue 1 de 2016-2017</h2>
-    <h3>Samedi 15 Avril 2017</h3>
-    <h4>Lyon - Nice</h4>
+    <h2>Journée {{currentmatchday}} de la {{competitions}}</h2>
+    {% for fixture_data in fixtures_datas %}
+    <h3>{{fixture_data["date"]}}</h3>
+    <h4>{{fixture_data["homeTeamName"]}}</h4>
     <dl>
       <dt>Heure</dt>
-      <dd>20h45</dd>
+      <dd>{{fixture_data["date"]}}</dd>
       <dt>Score</dt>
-      <dd>6 - 1</dd>
+      <dd>{{fixture_data["result"]["goalsHomeTeam"]}} - {{fixture_data["result"]["goalsAwayTeam"]}}</dd>
     </dl>
+    {% endfor %}
     <form action="" method="post">
       <label>
         <input type="radio" name="result" value="home" />

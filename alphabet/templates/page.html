@@ -41,7 +41,9 @@
         </label>
         <label>Utilisateur
           <select name="username">
-            <option value="1">Utilisateur</option>
+          {% for user in users %}
+            <option value="{{ user[0] }}">{{ user[0] }}</option>
+          {% endfor %}
           </select>
         </label>
         <input type="submit" value="Envoyer">

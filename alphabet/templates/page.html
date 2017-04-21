@@ -35,8 +35,12 @@
       <form method="get">
         <label>Journée
           <select name="matchday">
-          {% for i in range(1,numberofmatchdays+1) %}
-            <option value="{{ i }}">Journée {{ i }}</option>
+          {% for i in range(1, numberofmatchdays+1) %}
+            {% if i == currentmatchday %}
+              <option value="{{ i }}" selected>Journée {{ i }} </option>
+            {% else %}
+              <option value="{{ i }}">Journée {{ i }}</option> 
+            {% endif %}
           {% endfor %}
           </select>
         </label>

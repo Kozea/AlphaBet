@@ -30,6 +30,7 @@
   </header>
     
   <main>
+     {% if session['logged_in'] %}
     <nav>
       <form method="get">
         <label>Journée
@@ -71,6 +72,7 @@
       <dt>Score</dt>
       <dd>{{fixture_data["result"]["goalsHomeTeam"]}} - {{fixture_data["result"]["goalsAwayTeam"]}}</dd>
     </dl>
+    {% if urlusername == session['user'] %}
     <form action="" method="post">
       <label>
         <input type="radio" name="result" value="home" />
@@ -86,7 +88,9 @@
       </label>
       <input type="submit" value="Envoyer">
     </form>
+      {% endif %}              
      {% endif %}
     {% endfor %}
+    {% endif %}
   </main>
 </html>

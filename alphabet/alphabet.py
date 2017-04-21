@@ -58,6 +58,7 @@ def initdb_command():
 @app.route('/')
 def index():
     matchdaynumber = int(request.args["matchday"]) if "matchday" in request.args else None
+    urlusername = str(request.args["username"]) if "username" in request.args else None
     db = get_db()
     cursor_db = db.execute('select username from users')
     users = cursor_db.fetchall()
@@ -68,7 +69,7 @@ def index():
     connection_otherdatas.request('GET', '/v1/competitions/434/fixtures', None, headers )
     response_maindatas = json.loads(connection_maindatas.getresponse().read().decode())
     response_otherdatas = json.loads(connection_otherdatas.getresponse().read().decode())
-    return render_template('page.html',users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'],fixtures_datas=response_otherdatas['fixtures'])
+    return render_template('page.html', urlusername=urlusername ,users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'],fixtures_datas=response_otherdatas['fixtures'])
 
 
 @app.route('/login', methods=['GET','POST'])
@@ -78,7 +79,9 @@ def login():
     cursor = db.execute('select username from users where username = ? and password = ?', [request.form['username'], request.form['password']])
     users = cursor.fetchall()
     if users:
-  	  session['logged_in'] = True
+        connected_username=users[0]['username']
+        session['user'] = connected_username
+        session['logged_in'] = True
     else:
       flash('Mauvais identifiant ou mot de passe')
   return index()

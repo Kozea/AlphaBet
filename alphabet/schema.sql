@@ -23,4 +23,4 @@ VALUES
 ('Romain', 'Rouvier'),
 ('Guillaume', 'Ayoub'),
 ('Maelle', 'Pinto'),
-('John Doe', 'lemotdepasse'); 
+('John', 'lemotdepasse'); 

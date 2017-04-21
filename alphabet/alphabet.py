@@ -70,21 +70,22 @@ def index():
     response_otherdatas = json.loads(connection_otherdatas.getresponse().read().decode())
     return render_template('page.html',users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'],fixtures_datas=response_otherdatas['fixtures'])
 
+
 @app.route('/login', methods=['GET','POST'])
 def login():
   if request.method == 'POST':
     db = get_db()
-    cursor = db.execute('select username from users where username=? and password=?', [request.form['username'], request.form['password']])
+    cursor = db.execute('select username from users where username = ? and password = ?', [request.form['username'], request.form['password']])
     users = cursor.fetchall()
     if users:
   	  session['logged_in'] = True
     else:
       flash('Mauvais identifiant ou mot de passe')
-  return redirect(url_for('index'))
+  return index()
 
 
 @app.route('/logout')
 def logout():
     session['logged_in'] = False
     flash('Vous êtes déconnectés !')
-    return redirect(url_for('index'))
+    return index()

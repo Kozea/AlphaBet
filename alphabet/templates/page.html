@@ -43,7 +43,11 @@
         <label>Utilisateur
           <select name="username">
           {% for user in users %}
-            <option value="{{ user[0] }}">{{ user[0] }}</option>
+            {% if user[0] == request.form['username']  %}
+              <option value="{{ user[0] }}" selected>{{ user[0] }}</option>  
+            {% else %}
+              <option value="{{ user[0] }}">{{ user[0] }}</option> 
+            {% endif %}
           {% endfor %}
           </select>
         </label>

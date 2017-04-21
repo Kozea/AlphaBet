@@ -57,7 +57,7 @@ def initdb_command():
 
 @app.route('/')
 def index():
-    matchdaynumber = int(request.args["matchday"]) if "matchday" in request.args else None
+    matchdaynumber = int(request.args["matchday"]) if "matchday" in request.args else 1
     urlusername = str(request.args["username"]) if "username" in request.args else None
     db = get_db()
     cursor_db = db.execute('select username from users')
@@ -84,7 +84,7 @@ def login():
         session['logged_in'] = True
     else:
       flash('Mauvais identifiant ou mot de passe')
-  return index()
+  return redirect(url_for('index'))
 
 
 @app.route('/logout')

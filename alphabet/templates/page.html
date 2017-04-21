@@ -36,7 +36,7 @@
         <label>Journée
           <select name="matchday">
           {% for i in range(1, numberofmatchdays+1) %}
-            {% if i == currentmatchday %}
+            {% if i ==  matchdaynumber %}
               <option value="{{ i }}" selected>Journée {{ i }} </option>
             {% else %}
               <option value="{{ i }}">Journée {{ i }}</option> 
@@ -47,7 +47,7 @@
         <label>Utilisateur
           <select name="username">
           {% for user in users %}
-            {% if user[0] == request.form['username']  %}
+            {% if user[0] == urlusername  %}
               <option value="{{ user[0] }}" selected>{{ user[0] }}</option>  
             {% else %}
               <option value="{{ user[0] }}">{{ user[0] }}</option> 

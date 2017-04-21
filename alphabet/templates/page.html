@@ -42,20 +42,13 @@
         </label>
         <label>Utilisateur
           <select name="username">
-          {% if session['logged_in'] %}
-            {% for user in users %}
-              {% if user[0] == request.form['username']  %}
-                <option value="{{ user[0] }}" selected>{{ user[0] }}</option>  
-              {% else %}
-                <option value="{{ user[0] }}">{{ user[0] }}</option> 
-              {% endif %}
-            {% endfor %}
-          {% else %} 
-            <option value=None></option>
-            {% for user in users %}
-              <option value="{{ user[0] }}">{{ user[0] }}</option>
-            {% endfor %}
-          {% endif %}
+          {% for user in users %}
+            {% if user[0] == request.form['username']  %}
+              <option value="{{ user[0] }}" selected>{{ user[0] }}</option>  
+            {% else %}
+              <option value="{{ user[0] }}">{{ user[0] }}</option> 
+            {% endif %}
+          {% endfor %}
           </select>
         </label>
         <input type="submit" value="Envoyer">

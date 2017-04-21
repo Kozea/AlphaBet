@@ -69,7 +69,7 @@
       <dt>Score</dt>
       <dd>{{fixture_data["result"]["goalsHomeTeam"]}} - {{fixture_data["result"]["goalsAwayTeam"]}}</dd>
     </dl>
-    {% if urlusername == session['user'] %}
+           {% if (urlusername == session['user']) and (fixture_data["status"] == 'TIMED' or 'SCHEDULED') %}
     <form action="" method="post">
       <label>
         <input type="radio" name="result" value="home" />
@@ -85,6 +85,8 @@
       </label>
       <input type="submit" value="Envoyer">
     </form>
+            {% else %}
+                     
       {% endif %}              
      {% endif %}
     {% endfor %}

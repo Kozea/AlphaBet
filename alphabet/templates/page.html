@@ -8,7 +8,7 @@
     <h1>AlphaBet</h1>
     <aside>
       {% if session['logged_in'] %}
-        <p>Vous êtes connectés !</p>
+        <p>Vous êtes connectés en tant que {{ session['user'] }} !</p>
         <form action="/logout">
           <input type="submit" value="Se deconnecter" />
         </form>
@@ -63,6 +63,7 @@
         {% if fixture_data["matchday"] == matchdaynumber %}
           <h3>{{ Date }}</h3>
           <h4>{{ fixture_data["homeTeamName"] }} - {{ fixture_data["awayTeamName"] }}</h4>
+          <h4>Match_id : {{ fixture_data["id"] }}</h4>
           <dl>
             <dt>Heure</dt>
             <dd>{{ Time }}</dd>

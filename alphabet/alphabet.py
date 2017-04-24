@@ -6,9 +6,10 @@ import sqlite3
 from datetime import date, datetime
 import datetime
 import time
+import pprint
+
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
-     
 app = Flask(__name__) # create the application instance 
 app.config.from_object(__name__) # load config from this file , alphabet.py
 
@@ -71,11 +72,13 @@ def index():
     connection_otherdatas.request('GET', '/v1/competitions/434/fixtures', None, headers )
     response_maindatas = json.loads(connection_maindatas.getresponse().read().decode())
     response_otherdatas = json.loads(connection_otherdatas.getresponse().read().decode())
+    fixtures_datas = response_otherdatas['fixtures']
+    matchid = response_otherdatas['fixtures'][0]['id']
     matchdate = response_otherdatas['fixtures'][0]['date']
     DateTime = datetime.datetime.strptime(matchdate, '%Y-%m-%dT%H:%M:%SZ')
     Date =  DateTime.strftime('%A %d %B %Y')
     Time = DateTime.strftime('%H' + 'h' + '%M')
-    return render_template('page.html', urlusername=urlusername ,users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'],fixtures_datas=response_otherdatas['fixtures'], Date=Date, Time=Time)
+    return render_template('page.html', urlusername=urlusername ,users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'],fixtures_datas=fixtures_datas, Date=Date, Time=Time)
 
 
 @app.route('/login', methods=['GET','POST'])

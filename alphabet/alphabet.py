@@ -80,7 +80,6 @@ def index():
     Time = DateTime.strftime('%H' + 'h' + '%M')
     return render_template('page.html', urlusername=urlusername ,users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'], fixtures_datas=fixtures_datas, Date=Date, Time=Time)
 
-
 @app.route('/login', methods=['GET','POST'])
 def login():
   if request.method == 'POST':
@@ -100,4 +99,9 @@ def login():
 def logout():
     session['logged_in'] = False
     flash('Vous êtes déconnectés !')
-    return index()
+    return redirect(url_for('index'))
+    
+@app.route('/bet')
+def bet():
+    print('Hello World')
+    return redirect(url_for('index'))

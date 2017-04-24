@@ -71,8 +71,7 @@ def index():
     response_maindatas = json.loads(connection_maindatas.getresponse().read().decode())
     response_otherdatas = json.loads(connection_otherdatas.getresponse().read().decode())
     fixtures_datas=response_otherdatas['fixtures']
-    matchid=response_otherdatas['fixtures'][0]['id']
-    pprint.pprint(matchid)
+    pprint.pprint(fixtures_datas)
 
     return render_template('page.html', urlusername=urlusername ,users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'],fixtures_datas=fixtures_datas)
 
@@ -96,4 +95,9 @@ def login():
 def logout():
     session['logged_in'] = False
     flash('Vous êtes déconnectés !')
-    return index()
+    return redirect(url_for('index'))
+    
+@app.route('/bet')
+def bet():
+    print('Hello World')
+    return redirect(url_for('index'))

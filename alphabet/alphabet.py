@@ -3,6 +3,8 @@ import http.client
 import json
 import os
 import sqlite3
+from datetime import date, datetime
+import datetime
 import time
 import pprint
 
@@ -65,16 +67,18 @@ def index():
     users = cursor_db.fetchall()
     connection_maindatas = http.client.HTTPConnection('api.football-data.org')
     connection_otherdatas = http.client.HTTPConnection('api.football-data.org')
-    headers = { 'X-Auth-Token': '1e3a1eef83194d64a62b7faaead5fe3b', 'X-Response-Control': 'minified' }
+    headers = { 'X-Auth-Token': '1e3a1eef83194d64a62b7faaead5fe3b', 'X-Response-Control' : 'minified' }
     connection_maindatas.request('GET', '/v1/competitions/434', None, headers )
     connection_otherdatas.request('GET', '/v1/competitions/434/fixtures', None, headers )
     response_maindatas = json.loads(connection_maindatas.getresponse().read().decode())
     response_otherdatas = json.loads(connection_otherdatas.getresponse().read().decode())
-    fixtures_datas=response_otherdatas['fixtures']
-    pprint.pprint(fixtures_datas)
-
-    return render_template('page.html', urlusername=urlusername ,users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'],fixtures_datas=fixtures_datas)
-
+    fixtures_datas = response_otherdatas['fixtures']
+    matchid = response_otherdatas['fixtures'][0]['id']
+    matchdate = response_otherdatas['fixtures'][0]['date']
+    DateTime = datetime.datetime.strptime(matchdate, '%Y-%m-%dT%H:%M:%SZ')
+    Date =  DateTime.strftime('%A %d %B %Y')
+    Time = DateTime.strftime('%H' + 'h' + '%M')
+    return render_template('page.html', urlusername=urlusername ,users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'],fixtures_datas=fixtures_datas, Date=Date, Time=Time)
 
 @app.route('/login', methods=['GET','POST'])
 def login():

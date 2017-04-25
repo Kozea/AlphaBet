@@ -78,7 +78,7 @@ def index():
     DateTime = datetime.datetime.strptime(matchdate, '%Y-%m-%dT%H:%M:%SZ')
     Date =  DateTime.strftime('%A %d %B %Y')
     Time = DateTime.strftime('%H' + 'h' + '%M')
-    return render_template('page.html', urlusername=urlusername ,users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'],fixtures_datas=fixtures_datas, Date=Date, Time=Time)
+    return render_template('page.html', urlusername=urlusername ,users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'], fixtures_datas=fixtures_datas, Date=Date, Time=Time)
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -87,7 +87,7 @@ def login():
     cursor = db.execute('select username from users where username = ? and password = ?', [request.form['username'], request.form['password']])
     users = cursor.fetchall()
     if users:
-        connected_username=users[0]['username']
+        connected_username = users[0]['username']
         session['user'] = connected_username
         session['logged_in'] = True
     else:

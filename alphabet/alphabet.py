@@ -65,7 +65,13 @@ def index():
     urlusername = str(request.args["username"]) if "username" in request.args else None
     db = get_db()
     cursor_db = db.execute('select username from users')
+    cursor_matchid = db.execute('select match_id from user_bets')
+    cursor_outcome = db.execute('select outcome from user_bets')
     users = cursor_db.fetchall()
+    resultset = [row["match_id"] for row in cursor_matchid]
+    resultbet = [row["outcome"] for row in cursor_outcome]
+    print(resultset)
+    print(resultbet)
     connection_maindatas = http.client.HTTPConnection('api.football-data.org')
     connection_otherdatas = http.client.HTTPConnection('api.football-data.org')
     headers = { 'X-Auth-Token': '1e3a1eef83194d64a62b7faaead5fe3b', 'X-Response-Control' : 'minified' }
@@ -79,7 +85,7 @@ def index():
     DateTime = datetime.datetime.strptime(matchdate, '%Y-%m-%dT%H:%M:%SZ')
     Date =  DateTime.strftime('%A %d %B %Y')
     Time = DateTime.strftime('%H' + 'h' + '%M')
-    return render_template('page.html', urlusername=urlusername ,users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'], fixtures_datas=fixtures_datas, Date=Date, Time=Time)
+    return render_template('page.html', urlusername=urlusername ,users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'], fixtures_datas=fixtures_datas, Date=Date, Time=Time, resultset=resultset, resultbet=resultbet)
 
 
 @app.route('/login', methods=['GET','POST'])
@@ -114,4 +120,4 @@ def bet(match_id):
         u_id=usernamedb[0]['u_id']
         cursor_username = db.execute('insert into user_bets (u_id, match_id, outcome) values (?, ?, ?)',(u_id, match_id, outcome))
         db.commit()   
-    return redirect(url_for('index'))
+    return redirect(request.referrer)

@@ -58,7 +58,7 @@
       </form>
     </nav>
     <h2>Journée {{matchdaynumber}} de la {{competitions}}</h2>
-    {% for fixture_data in fixtures_datas %}
+    {% for fixture_data in fixtures_datas|groupby('date') %}
         {% if fixture_data["matchday"] == matchdaynumber %}
     <h3>{{fixture_data["date"]}}</h3>
     <h4>{{fixture_data["homeTeamName"]}} - {{fixture_data["awayTeamName"]}}</h4>
@@ -71,7 +71,7 @@
     </dl>       
            {% if (session['logged_in']) and ((fixture_data["status"] == 'TIMED') or (fixture_data["status"] == 'SCHEDULED')) %}
                 {% if urlusername == session['user'] %}
-    <form action="/bet" method="get">
+    <form action="{{ url_for('bet', match_id=fixture_data['id']) }}" method="post">
       <label>
         <input type="radio" name="result" value="home" />
         Domicile
@@ -87,7 +87,7 @@
       <input type="submit" value="Envoyer">
     </form>
            {% else %}
-    <form action="" method="get">
+    <form action="" method="post">
       <label>
         <input type="radio" name="result" value="home" disabled="disabled">
         Domicile

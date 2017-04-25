@@ -100,8 +100,18 @@ def logout():
     session['logged_in'] = False
     flash('Vous êtes déconnectés !')
     return redirect(url_for('index'))
-    
-@app.route('/bet')
-def bet():
-    print('Hello World')
+   
+@app.route('/bet/<int:match_id>', methods=['POST'])
+def bet(match_id):
+    db = get_db()
+    cursor_username = db.execute('select u_id from users where username = ?',(session['user'],))
+    usernamedb = cursor_username.fetchall()
+    if usernamedb:
+        outcome = request.form['result']
+        u_id=usernamedb[0]['u_id']
+        print(u_id)
+        print(match_id)
+        print(type(outcome))
+        cursor_username = db.execute('insert into user_bets (u_id, match_id, outcome) values (?, ?, ?)',(u_id, match_id, outcome))
+        db.commit()   
     return redirect(url_for('index'))

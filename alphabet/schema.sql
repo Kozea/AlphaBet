@@ -13,7 +13,7 @@ create table user_bets
   id_bet integer primary key autoincrement,
   u_id integer not null,
   match_id integer not null,
-  outcome varchar(1),
+  outcome varchar(10),
   FOREIGN KEY (u_id) REFERENCES users(u_id),
   CONSTRAINT couple_unique UNIQUE (u_id, match_id)
 );

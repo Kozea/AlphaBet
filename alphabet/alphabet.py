@@ -58,6 +58,7 @@ def initdb_command():
     init_db()
     print('Initialized the database.')
 
+
 @app.route('/')
 def index():
     matchdaynumber = int(request.args["matchday"]) if "matchday" in request.args else 1
@@ -80,6 +81,7 @@ def index():
     Time = DateTime.strftime('%H' + 'h' + '%M')
     return render_template('page.html', urlusername=urlusername ,users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'], fixtures_datas=fixtures_datas, Date=Date, Time=Time)
 
+
 @app.route('/login', methods=['GET','POST'])
 def login():
   if request.method == 'POST':
@@ -100,7 +102,8 @@ def logout():
     session['logged_in'] = False
     flash('Vous êtes déconnectés !')
     return redirect(url_for('index'))
-   
+
+
 @app.route('/bet/<int:match_id>', methods=['POST'])
 def bet(match_id):
     db = get_db()
@@ -109,9 +112,6 @@ def bet(match_id):
     if usernamedb:
         outcome = request.form['result']
         u_id=usernamedb[0]['u_id']
-        print(u_id)
-        print(match_id)
-        print(type(outcome))
         cursor_username = db.execute('insert into user_bets (u_id, match_id, outcome) values (?, ?, ?)',(u_id, match_id, outcome))
         db.commit()   
     return redirect(url_for('index'))

@@ -29,7 +29,7 @@
     </aside>
   </header>
   <main>
-     {% if session['logged_in'] %}
+   {% if session['logged_in'] %}
     <nav>
       <form method="get">
         <label>Journée
@@ -58,53 +58,56 @@
       </form>
     </nav>
     <h2>Journée {{matchdaynumber}} de la {{competitions}}</h2>
-    {% for fixture_data in fixtures_datas|groupby('date') %}
+    {% for fixture_data in fixtures_datas %}
+      {% for grouper, list in fixtures_datas|groupby('date') %}
         {% if fixture_data["matchday"] == matchdaynumber %}
-    <h3>{{fixture_data["date"]}}</h3>
-    <h4>{{fixture_data["homeTeamName"]}} - {{fixture_data["awayTeamName"]}}</h4>
-    <h4>Match_id : {{ fixture_data["id"] }}</h4>
-    <dl>
-      <dt>Heure</dt>
-      <dd>{{fixture_data["date"]}}</dd>
-      <dt>Score</dt>
-      <dd>{{fixture_data["result"]["goalsHomeTeam"]}} - {{fixture_data["result"]["goalsAwayTeam"]}}</dd>
-    </dl>       
-           {% if (session['logged_in']) and ((fixture_data["status"] == 'TIMED') or (fixture_data["status"] == 'SCHEDULED')) %}
-                {% if urlusername == session['user'] %}
-    <form action="{{ url_for('bet', match_id=fixture_data['id']) }}" method="post">
-      <label>
-        <input type="radio" name="result" value="home" />
-        Domicile
-      </label>
-      <label>
-        <input type="radio" name="result" value="draw" />
-        Nul
-      </label>
-      <label>
-        <input type="radio" name="result" value="away" />
-        Extérieur
-      </label>
-      <input type="submit" value="Envoyer">
-    </form>
-           {% else %}
-    <form action="" method="post">
-      <label>
-        <input type="radio" name="result" value="home" disabled="disabled">
-        Domicile
-      </label>
-      <label>
-        <input type="radio" name="result" value="draw" disabled="disabled"/>
-        Nul
-      </label>
-      <label>
-        <input type="radio" name="result" value="away" disabled="disabled"/>
-        Extérieur
-      </label>
-    </form>
-        {% endif %}             
-      {% endif %}              
-     {% endif %}
+          <li>{{ grouper }}
+          <ul>
+            {% for item in list %}
+                <li>{{ item.homeTeamName }} - {{ item.awayTeamName }}</li>
+                <li>Match_id : {{ item.id }}</li>
+                <li>Heure : {{ item.date }}</li>
+                <li>Score : {{ item.result.goalsHomeTeam }} - {{ item.result.goalsAwayTeam }}</li>
+            {% endfor %}
+          </ul>
+          </li>
+          {% if (session['logged_in']) and ((fixture_data["status"] == 'TIMED') or (fixture_data["status"] == 'SCHEDULED')) %}
+            {% if urlusername == session['user'] %}
+              <form action="{{ url_for('bet', match_id=fixture_data['id']) }}" method="post">
+                <label>
+                  <input type="radio" name="result" value="home" />
+                  Domicile
+                </label>
+                <label>
+                  <input type="radio" name="result" value="draw" />
+                  Nul
+                </label>
+                <label>
+                  <input type="radio" name="result" value="away" />
+                  Extérieur
+                </label>
+                <input type="submit" value="Envoyer">
+              </form>
+                     {% else %}
+              <form action="" method="post">
+                <label>
+                  <input type="radio" name="result" value="home" disabled="disabled">
+                  Domicile
+                </label>
+                <label>
+                  <input type="radio" name="result" value="draw" disabled="disabled"/>
+                  Nul
+                </label>
+                <label>
+                  <input type="radio" name="result" value="away" disabled="disabled"/>
+                  Extérieur
+                </label>
+              </form>
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
     {% endfor %}
-    {% endif %}
+  {% endif %}
   </main>
 </html>

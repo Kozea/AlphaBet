@@ -6,7 +6,8 @@ import sqlite3
 from datetime import date, datetime
 import datetime
 import time
-import pprint
+import locale 
+locale.setlocale(locale.LC_ALL, 'fr_FR.utf8')
 
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
@@ -70,8 +71,6 @@ def index():
     users = cursor_db.fetchall()
     resultset = [row["match_id"] for row in cursor_matchid]
     resultbet = [row["outcome"] for row in cursor_outcome]
-    print(resultset)
-    print(resultbet)
     connection_maindatas = http.client.HTTPConnection('api.football-data.org')
     connection_otherdatas = http.client.HTTPConnection('api.football-data.org')
     headers = { 'X-Auth-Token': '1e3a1eef83194d64a62b7faaead5fe3b', 'X-Response-Control' : 'minified' }
@@ -81,11 +80,14 @@ def index():
     response_otherdatas = json.loads(connection_otherdatas.getresponse().read().decode())
     fixtures_datas = response_otherdatas['fixtures']
     matchid = response_otherdatas['fixtures'][0]['id']
-    matchdate = response_otherdatas['fixtures'][0]['date']
-    DateTime = datetime.datetime.strptime(matchdate, '%Y-%m-%dT%H:%M:%SZ')
-    Date =  DateTime.strftime('%A %d %B %Y')
-    Time = DateTime.strftime('%H' + 'h' + '%M')
-    return render_template('page.html', urlusername=urlusername ,users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'], fixtures_datas=fixtures_datas, Date=Date, Time=Time, resultset=resultset, resultbet=resultbet)
+    for fixture_data in fixtures_datas: 
+      matchdate = fixture_data['date'][0:10]
+      Date = datetime.datetime.strptime(matchdate, '%Y-%m-%d').strftime('%A %d %B %Y')
+      matchtime = fixture_data['date'][11:19]
+      Time = datetime.datetime.strptime(matchtime, '%H:%M:%S').strftime('%H' + 'h' + '%M')
+      fixture_data["Date"]=Date
+      fixture_data["Time"]=Time
+    return render_template('page.html', urlusername=urlusername ,users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'], fixtures_datas=fixtures_datas, matchdate=matchdate, Date=Date, Time=Time, resultset=resultset, resultbet=resultbet)
 
 
 @app.route('/login', methods=['GET','POST'])

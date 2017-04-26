@@ -78,6 +78,8 @@ def index():
     cursor_outcome = db.execute('select outcome from user_bets where u_id = ?',(resultuid[0],))
     resultbet = [row["outcome"] for row in cursor_outcome]
     
+    
+    
     users = cursor_db.fetchall()
  
     print(resultusername)

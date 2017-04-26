@@ -131,5 +131,5 @@ def bet(match_id):
         outcome = request.form['result']
         u_id=usernamedb[0]['u_id']
         cursor_username = db.execute('insert into user_bets (u_id, match_id, outcome) values (?, ?, ?)',(u_id, match_id, outcome))
-        db.commit()   
+        db.commit()
     return redirect(request.referrer)

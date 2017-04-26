@@ -6,7 +6,8 @@ import sqlite3
 from datetime import date, datetime
 import datetime
 import time
-import pprint
+import locale 
+locale.setlocale(locale.LC_ALL, 'fr_FR.utf8')
 
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
@@ -63,13 +64,14 @@ def index():
     matchdaynumber = int(request.args["matchday"]) if "matchday" in request.args else 1
     urlusername = str(request.args["username"]) if "username" in request.args else None
     db = get_db()
+    currentuser = urlusername or session['user']
     cursor_db = db.execute('select username from users')
 
     cursor_db_username = db.execute('select username from users')
     resultusername = [row["username"] for row in cursor_db_username]
     username = cursor_db_username.fetchall()
     
-    cursor_uid = db.execute('select u_id from users where username = ?',(session['user'],))
+    cursor_uid = db.execute('select u_id from users where username = ?',(currentuser,))
     resultuid = [row["u_id"] for row in cursor_uid]
     
     cursor_matchid = db.execute('select match_id from user_bets where u_id = ?',(resultuid[0],))
@@ -78,28 +80,34 @@ def index():
     cursor_outcome = db.execute('select outcome from user_bets where u_id = ?',(resultuid[0],))
     resultbet = [row["outcome"] for row in cursor_outcome]
     
-    
-    
-    users = cursor_db.fetchall()
- 
-    print(resultusername)
-    print(resultuid)
-    print(resultset)
-    print(resultbet)
     connection_maindatas = http.client.HTTPConnection('api.football-data.org')
     connection_otherdatas = http.client.HTTPConnection('api.football-data.org')
     headers = { 'X-Auth-Token': '1e3a1eef83194d64a62b7faaead5fe3b', 'X-Response-Control' : 'minified' }
     connection_maindatas.request('GET', '/v1/competitions/434', None, headers )
     connection_otherdatas.request('GET', '/v1/competitions/434/fixtures', None, headers )
+    
     response_maindatas = json.loads(connection_maindatas.getresponse().read().decode())
     response_otherdatas = json.loads(connection_otherdatas.getresponse().read().decode())
     fixtures_datas = response_otherdatas['fixtures']
     matchid = response_otherdatas['fixtures'][0]['id']
-    matchdate = response_otherdatas['fixtures'][0]['date']
-    DateTime = datetime.datetime.strptime(matchdate, '%Y-%m-%dT%H:%M:%SZ')
-    Date =  DateTime.strftime('%A %d %B %Y')
-    Time = DateTime.strftime('%H' + 'h' + '%M')
-    return render_template('page.html', urlusername=urlusername ,users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=response_maindatas['currentMatchday'], competitions=response_maindatas['caption'], fixtures_datas=fixtures_datas, Date=Date, Time=Time, resultset=resultset, resultbet=resultbet)
+    currentmatchday = int(request.args['matchday']) or response_maindatas['currentMatchday']
+    
+    users = cursor_db.fetchall()
+    
+    for fixture_data in fixtures_datas: 
+      matchdate = fixture_data['date'][0:10]
+      Date = datetime.datetime.strptime(matchdate, '%Y-%m-%d').strftime('%A %d %B %Y')
+      matchtime = fixture_data['date'][11:19]
+      Time = datetime.datetime.strptime(matchtime, '%H:%M:%S').strftime('%H' + 'h' + '%M')
+      fixture_data["Date"]=Date
+      fixture_data["Time"]=Time
+
+    print(resultusername)
+    print(resultuid)
+    print(resultset)
+    print(resultbet)
+   
+    return render_template('page.html', urlusername=urlusername, users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=currentmatchday, competitions=response_maindatas['caption'], fixtures_datas=fixtures_datas, Date=Date, Time=Time, resultset=resultset, resultbet=resultbet, currentuser=currentuser)
 
 @app.route('/login', methods=['GET','POST'])
 def login():

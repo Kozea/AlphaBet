@@ -64,11 +64,24 @@ def index():
     urlusername = str(request.args["username"]) if "username" in request.args else None
     db = get_db()
     cursor_db = db.execute('select username from users')
-    cursor_matchid = db.execute('select match_id from user_bets')
-    cursor_outcome = db.execute('select outcome from user_bets')
-    users = cursor_db.fetchall()
+
+    cursor_db_username = db.execute('select username from users')
+    resultusername = [row["username"] for row in cursor_db_username]
+    username = cursor_db_username.fetchall()
+    
+    cursor_uid = db.execute('select u_id from users where username = ?',(session['user'],))
+    resultuid = [row["u_id"] for row in cursor_uid]
+    
+    cursor_matchid = db.execute('select match_id from user_bets where u_id = ?',(resultuid[0],))
     resultset = [row["match_id"] for row in cursor_matchid]
+    
+    cursor_outcome = db.execute('select outcome from user_bets where u_id = ?',(resultuid[0],))
     resultbet = [row["outcome"] for row in cursor_outcome]
+    
+    users = cursor_db.fetchall()
+ 
+    print(resultusername)
+    print(resultuid)
     print(resultset)
     print(resultbet)
     connection_maindatas = http.client.HTTPConnection('api.football-data.org')

@@ -61,8 +61,8 @@ def initdb_command():
 
 @app.route('/')
 def index():
-    matchdaynumber = int(request.args["matchday"]) if "matchday" in request.args else 1
-    urlusername = str(request.args["username"]) if "username" in request.args else None
+    matchdaynumber = int(request.args.get("matchday",1)) 
+    urlusername = request.args.get("username")
     db = get_db()
     currentuser = urlusername or session['user']
     cursor_db = db.execute('select username from users')
@@ -90,7 +90,7 @@ def index():
     response_otherdatas = json.loads(connection_otherdatas.getresponse().read().decode())
     fixtures_datas = response_otherdatas['fixtures']
     matchid = response_otherdatas['fixtures'][0]['id']
-    currentmatchday = int(request.args['matchday']) or response_maindatas['currentMatchday']
+    currentmatchday = int(request.args.get('matchday',response_maindatas['currentMatchday']))
     
     users = cursor_db.fetchall()
     

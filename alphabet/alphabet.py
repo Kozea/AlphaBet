@@ -64,6 +64,7 @@ def index():
     matchdaynumber = int(request.args.get("matchday",1)) 
     urlusername = request.args.get("username")
     db = get_db()
+    #session['user'] = 'John'
     currentuser = urlusername or session['user']
     cursor_db = db.execute('select username from users')
 
@@ -101,7 +102,8 @@ def index():
       Time = datetime.datetime.strptime(matchtime, '%H:%M:%S').strftime('%H' + 'h' + '%M')
       fixture_data["Date"]=Date
       fixture_data["Time"]=Time
-
+      
+    print(response_otherdatas)
     print(resultusername)
     print(resultuid)
     print(resultset)

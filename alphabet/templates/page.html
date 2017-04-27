@@ -112,7 +112,7 @@
           {% if (urlusername == session['user']) and (fixture_data["id"] not in resultset) %}
             <form action="{{ url_for('bet', match_id=fixture_data['id']) }}" method="post">
               <label>
-                <input type="radio" name="result" value="home" />
+                <input type="radio" name="result" value="home" selected="selected" />
                 Domicile
               </label>
               <label>

@@ -84,19 +84,18 @@ def index():
     fixtures_datas = response_otherdatas['fixtures']
     currentmatchday = int(
         request.args.get(
-            'matchday',
-            response_maindatas['currentMatchday']))
+            'matchday', response_maindatas['currentMatchday']))
     users = cursor_db.fetchall()
     for fixture_data in fixtures_datas:
         matchdate = fixture_data['date'][0:10]
-        Date = datetime.datetime.strptime(
+        date = datetime.datetime.strptime(
             matchdate, '%Y-%m-%d').strftime('%A %d %B %Y')
         matchtime = fixture_data['date'][11:19]
-        Time = datetime.datetime.strptime(
+        time = datetime.datetime.strptime(
             matchtime, '%H:%M:%S').strftime(
             '%H' + 'h' + '%M')
-        fixture_data["Date"] = Date
-        fixture_data["Time"] = Time
+        fixture_data["date"] = date
+        fixture_data["time"] = time
     return render_template(
         'page.html',
         urlusername=urlusername,
@@ -106,8 +105,8 @@ def index():
         currentmatchday=currentmatchday,
         competitions=response_maindatas['caption'],
         fixtures_datas=fixtures_datas,
-        Date=Date,
-        Time=Time,
+        date=date,
+        time=time,
         resultset=resultset,
         resultbet=resultbet,
         currentuser=currentuser)
@@ -149,8 +148,6 @@ def bet(match_id):
         u_id = usernamedb[0]['u_id']
         cursor_username = db.execute(
             'insert into user_bets (u_id, match_id, outcome) values (?, ?, ?)',
-            (u_id,
-             match_id,
-             outcome))
+            (u_id, match_id, outcome))
         db.commit()
     return redirect(request.referrer)

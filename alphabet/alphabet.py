@@ -120,6 +120,7 @@ def login():
         cursor = db.execute(
             'select username from users where username = ? and password = ?', [
                 request.form['username'], request.form['password']])
+                
         users = cursor.fetchall()
         if users:
             connected_username = users[0]['username']

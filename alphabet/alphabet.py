@@ -59,6 +59,7 @@ def initdb_command():
     init_db()
     print('Initialized the database.')
 
+
 @app.route('/')
 def index():
     matchdaynumber = int(request.args.get("matchday",1)) 
@@ -71,37 +72,38 @@ def index():
     cursor_db_username = db.execute('select username from users')
     resultusername = [row["username"] for row in cursor_db_username]
     username = cursor_db_username.fetchall()
-    
+
     cursor_uid = db.execute('select u_id from users where username = ?',(currentuser,))
     resultuid = [row["u_id"] for row in cursor_uid]
-    
+
     cursor_matchid = db.execute('select match_id from user_bets where u_id = ?',(resultuid[0],))
     resultset = [row["match_id"] for row in cursor_matchid]
-    
+
     cursor_outcome = db.execute('select outcome from user_bets where u_id = ?',(resultuid[0],))
     resultbet = [row["outcome"] for row in cursor_outcome]
-    
+
     connection_maindatas = http.client.HTTPConnection('api.football-data.org')
     connection_otherdatas = http.client.HTTPConnection('api.football-data.org')
     headers = { 'X-Auth-Token': '1e3a1eef83194d64a62b7faaead5fe3b', 'X-Response-Control' : 'minified' }
     connection_maindatas.request('GET', '/v1/competitions/434', None, headers )
     connection_otherdatas.request('GET', '/v1/competitions/434/fixtures', None, headers )
-    
+
     response_maindatas = json.loads(connection_maindatas.getresponse().read().decode())
     response_otherdatas = json.loads(connection_otherdatas.getresponse().read().decode())
     fixtures_datas = response_otherdatas['fixtures']
     matchid = response_otherdatas['fixtures'][0]['id']
     currentmatchday = int(request.args.get('matchday',response_maindatas['currentMatchday']))
-    
+
     users = cursor_db.fetchall()
-    
-    for fixture_data in fixtures_datas: 
+
+    for fixture_data in fixtures_datas:
         matchdate = fixture_data['date'][0:10]
         Date = datetime.datetime.strptime(matchdate, '%Y-%m-%d').strftime('%A %d %B %Y')
         matchtime = fixture_data['date'][11:19]
         Time = datetime.datetime.strptime(matchtime, '%H:%M:%S').strftime('%H' + 'h' + '%M')
         fixture_data["Date"]=Date
         fixture_data["Time"]=Time
+
     return render_template('page.html', urlusername=urlusername, users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=currentmatchday, competitions=response_maindatas['caption'], fixtures_datas=fixtures_datas, Date=Date, Time=Time, resultset=resultset, resultbet=resultbet, currentuser=currentuser)
 
 @app.route('/login', methods=['GET','POST'])
@@ -124,7 +126,8 @@ def logout():
     session['logged_in'] = False
     flash('Vous êtes déconnectés !')
     return redirect(url_for('index'))
-   
+
+
 @app.route('/bet/<int:match_id>', methods=['POST'])
 def bet(match_id):
     db = get_db()

@@ -10,7 +10,7 @@ import locale
 locale.setlocale(locale.LC_ALL, 'fr_FR.utf8')
 
 from flask import Flask, request, session, g, redirect, url_for, abort, \
-     render_template, flash
+    render_template, flash
 app = Flask(__name__) # create the application instance 
 app.config.from_object(__name__) # load config from this file , alphabet.py
 
@@ -64,6 +64,7 @@ def index():
     matchdaynumber = int(request.args.get("matchday",1)) 
     urlusername = request.args.get("username")
     db = get_db()
+    session['user'] = 'Romain'
     currentuser = urlusername or session['user']
     cursor_db = db.execute('select username from users')
 
@@ -95,33 +96,27 @@ def index():
     users = cursor_db.fetchall()
     
     for fixture_data in fixtures_datas: 
-      matchdate = fixture_data['date'][0:10]
-      Date = datetime.datetime.strptime(matchdate, '%Y-%m-%d').strftime('%A %d %B %Y')
-      matchtime = fixture_data['date'][11:19]
-      Time = datetime.datetime.strptime(matchtime, '%H:%M:%S').strftime('%H' + 'h' + '%M')
-      fixture_data["Date"]=Date
-      fixture_data["Time"]=Time
-
-    print(resultusername)
-    print(resultuid)
-    print(resultset)
-    print(resultbet)
-   
+        matchdate = fixture_data['date'][0:10]
+        Date = datetime.datetime.strptime(matchdate, '%Y-%m-%d').strftime('%A %d %B %Y')
+        matchtime = fixture_data['date'][11:19]
+        Time = datetime.datetime.strptime(matchtime, '%H:%M:%S').strftime('%H' + 'h' + '%M')
+        fixture_data["Date"]=Date
+        fixture_data["Time"]=Time
     return render_template('page.html', urlusername=urlusername, users=users, matchdaynumber=matchdaynumber, numberofmatchdays=response_maindatas['numberOfMatchdays'], currentmatchday=currentmatchday, competitions=response_maindatas['caption'], fixtures_datas=fixtures_datas, Date=Date, Time=Time, resultset=resultset, resultbet=resultbet, currentuser=currentuser)
 
 @app.route('/login', methods=['GET','POST'])
 def login():
-  if request.method == 'POST':
-    db = get_db()
-    cursor = db.execute('select username from users where username = ? and password = ?', [request.form['username'], request.form['password']])
-    users = cursor.fetchall()
-    if users:
-        connected_username = users[0]['username']
-        session['user'] = connected_username
-        session['logged_in'] = True
-    else:
-      flash('Mauvais identifiant ou mot de passe')
-  return redirect(url_for('index'))
+    if request.method == 'POST':
+        db = get_db()
+        cursor = db.execute('select username from users where username = ? and password = ?', [request.form['username'], request.form['password']])
+        users = cursor.fetchall()
+        if users:
+            connected_username = users[0]['username']
+            session['user'] = connected_username
+            session['logged_in'] = True
+        else:
+            flash('Mauvais identifiant ou mot de passe')
+        return redirect(url_for('index'))
 
 
 @app.route('/logout')

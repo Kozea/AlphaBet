@@ -60,14 +60,14 @@
     <h2>Journée {{ matchdaynumber }} de la {{ competitions }}</h2>
     {% for fixture_data in fixtures_datas %}
       {% if fixture_data["matchday"] == matchdaynumber %}
-        <h3>{{ fixture_data["Date"] }}</h3>
-        <h4>{{ fixture_data["homeTeamName"] }} - {{ fixture_data["awayTeamName"] }}</h4>
-        <dl>
-          <dt>Heure</dt>
-          <dd>{{ fixture_data["Time"] }}</dd>
-          <dt>Score</dt>
-          <dd>{{ fixture_data["result"]["goalsHomeTeam"] }} - {{ fixture_data["result"]["goalsAwayTeam"] }}</dd>
-        </dl>      
+		      <h3>{{ fixture_data|map(attribute='Date')|list|unique }}</h3>
+		      <h4>{{ fixture_data["homeTeamName"] }} - {{ fixture_data["awayTeamName"] }}</h4>
+		      <dl>
+		        <dt>Heure</dt>
+		        <dd>{{ fixture_data["Time"] }}</dd>
+		        <dt>Score</dt>
+		        <dd>{{ fixture_data["result"]["goalsHomeTeam"] }} - {{ fixture_data["result"]["goalsAwayTeam"] }}</dd>
+		      </dl>
         {% if (session['logged_in']) and ((fixture_data["status"] == 'TIMED') or (fixture_data["status"] == 'SCHEDULED')) %}
           {% if (urlusername == session['user']) and (fixture_data["id"] not in resultset) %}
             <form action="{{ url_for('bet', match_id=fixture_data['id']) }}" method="post">

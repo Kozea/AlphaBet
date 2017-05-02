@@ -59,20 +59,20 @@
         </form>
       </nav>
       <h2>Journée {{ matchdaynumber }} de la {{ competition }}</h2>
-      {% for fixture_data in fixtures_datas %}
-        {% if fixture_data.matchday == matchdaynumber %}
-          <h3>{{ fixture_data.date }}</h3>
-          <h4>{{ fixture_data.homeTeamName }} - {{ fixture_data.awayTeamName }}</h4>
+      {% for date, matches in fixtures_datas|selectattr('matchday', 'equalto', matchdaynumber)|groupby('date')|reverse %}
+        <h3>{{ date }}</h3>
+        {% for match in matches %}
+          <h4>{{ match.homeTeamName }} - {{ match.awayTeamName }}</h4>
           <dl>
             <dt>Heure</dt>
-            <dd>{{ fixture_data.time }}</dd>
+            <dd>{{ match.time }}</dd>
             <dt>Score</dt>
-            <dd>{{ fixture_data.result.goalsHomeTeam }} - {{ fixture_data.result.goalsAwayTeam }}</dd>
+            <dd>{{ match.result.goalsHomeTeam }} - {{ match.result.goalsAwayTeam }}</dd>
           </dl>
-          {% if session.user and fixture_data.status == 'FINISHED' and fixture_data.id in resultset %}
+          {% if session.user and match.status == 'FINISHED' and match.id in resultset %}
             <form action="" method="post">
               <label>
-                {% if resultbet[resultset.index(fixture_data.id)] == 'home' %}
+                {% if resultbet[resultset.index(match.id)] == 'home' %}
                   <input type="radio" name="result" value="home" checked="checked">
                   Domicile
                 {% else %}
@@ -81,7 +81,7 @@
                 {% endif %}
               </label>
               <label>
-                {% if resultbet[resultset.index(fixture_data.id)] == 'draw' %}
+                {% if resultbet[resultset.index(match.id)] == 'draw' %}
                   <input type="radio" name="result" value="draw" checked="checked"/>
                   Nul
                 {% else %}
@@ -90,7 +90,7 @@
                 {% endif %}
               </label>
               <label>
-                {% if resultbet[resultset.index(fixture_data.id)] == 'away' %}
+                {% if resultbet[resultset.index(match.id)] == 'away' %}
                   <input type="radio" name="result" value="away" checked="checked"/>
                   Extérieur
                 {% else %}
@@ -98,20 +98,20 @@
                   Extérieur
                 {% endif %}
               </label>
-              {% if fixture_data.result.goalsHomeTeam > fixture_data.result.goalsAwayTeam and resultbet[resultset.index(fixture_data.id)] == 'home' %}
+              {% if match.result.goalsHomeTeam > match.result.goalsAwayTeam and resultbet[resultset.index(match.id)] == 'home' %}
                 <p>Pari correct</p>
-              {% elif fixture_data.result.goalsHomeTeam < fixture_data.result.goalsAwayTeam and resultbet[resultset.index(fixture_data.id)] == 'away' %}
+              {% elif match.result.goalsHomeTeam < match.result.goalsAwayTeam and resultbet[resultset.index(match.id)] == 'away' %}
                 <p>Pari correct</p>
-              {% elif fixture_data.result.goalsHomeTeam == fixture_data.result.goalsAwayTeam and resultbet[resultset.index(fixture_data.id)] == 'draw' %}
+              {% elif match.result.goalsHomeTeam == match.result.goalsAwayTeam and resultbet[resultset.index(match.id)] == 'draw' %}
                 <p>Pari correct</p>
               {% else %}
                 <p>Pari incorrect</p>
               {% endif %}
             </form>
                   
-          {% elif session.user and fixture_data.status in ('TIMED', 'SCHEDULED') %}
-            {% if urlusername == session.user and fixture_data.id not in resultset %}
-              <form action="{{ url_for('bet', match_id=fixture_data.id) }}" method="post">
+          {% elif session.user and match.status in ('TIMED', 'SCHEDULED') %}
+            {% if urlusername == session.user and match.id not in resultset %}
+              <form action="{{ url_for('bet', match_id=match.id) }}" method="post">
                 <label>
                   <input type="radio" name="result" value="home" selected="selected" />
                   Domicile
@@ -126,10 +126,10 @@
                 </label>
                 <input type="submit" value="Envoyer">
               </form>
-            {% elif urlusername == session.user and fixture_data.id in resultset %}
+            {% elif urlusername == session.user and match.id in resultset %}
               <form action="" method="post">
                 <label>
-                  {% if resultbet[resultset.index(fixture_data.id)] == 'home' %}
+                  {% if resultbet[resultset.index(match.id)] == 'home' %}
                     <input type="radio" name="result" value="home" checked="checked">
                     Domicile
                   {% else %}
@@ -138,7 +138,7 @@
                   {% endif %}
                 </label>
                 <label>
-                  {% if resultbet[resultset.index(fixture_data.id)] == 'draw' %}
+                  {% if resultbet[resultset.index(match.id)] == 'draw' %}
                     <input type="radio" name="result" value="draw" checked="checked"/>
                     Nul
                   {% else %}
@@ -147,7 +147,7 @@
                   {% endif %}
                 </label>
                 <label>
-                  {% if resultbet[resultset.index(fixture_data.id)] == 'away' %}
+                  {% if resultbet[resultset.index(match.id)] == 'away' %}
                     <input type="radio" name="result" value="away" checked="checked"/>
                     Extérieur
                   {% else %}
@@ -156,10 +156,10 @@
                   {% endif %}
                 </label>
               </form>
-            {% elif urlusername != session.user and fixture_data.id in resultset %}
+            {% elif urlusername != session.user and match.id in resultset %}
               <form action="" method="post">
                 <label>
-                  {% if resultbet[resultset.index(fixture_data.id)] == 'home' %}
+                  {% if resultbet[resultset.index(match.id)] == 'home' %}
                     <input type="radio" name="result" value="home" checked="checked">
                     Domicile
                   {% else %}
@@ -168,7 +168,7 @@
                   {% endif %}
                 </label>
                 <label>
-                  {% if resultbet[resultset.index(fixture_data.id)] == 'draw' %}
+                  {% if resultbet[resultset.index(match.id)] == 'draw' %}
                     <input type="radio" name="result" value="draw" checked="checked"/>
                     Nul
                   {% else %}
@@ -177,7 +177,7 @@
                   {% endif %}
                 </label>
                 <label>
-                  {% if resultbet[resultset.index(fixture_data.id)] == 'away' %}
+                  {% if resultbet[resultset.index(match.id)] == 'away' %}
                     <input type="radio" name="result" value="away" checked="checked"/>
                     Extérieur
                   {% else %}
@@ -188,7 +188,7 @@
               </form>
             {% endif %}
           {% endif %}
-        {% endif %}
+        {% endfor %}
       {% endfor %}
     {% endif %}
   </main>

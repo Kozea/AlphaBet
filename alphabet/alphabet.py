@@ -4,6 +4,8 @@ import json
 import locale
 import os
 import sqlite3
+from itertools import groupby
+from operator import itemgetter
 
 from flask import (Flask, flash, g, redirect, render_template, request,
                    session, url_for)
@@ -86,11 +88,11 @@ def index():
     matchdaynumber = int(
         request.args.get("matchday", response_maindatas['currentMatchday']))
     for fixture_data in fixtures_datas:
-        match_datetime = fixture_data.groupby(data['date'].map(lambda x: x.date))
         match_datetime = datetime.datetime.strptime(
              fixture_data['date'], '%Y-%m-%dT%H:%M:%SZ')
-        fixture_data["date"] = match_datetime.strftime('%A %d %B %Y')
-        fixture_data["time"] = match_datetime.strftime('%Hh%M')
+        fixture_data['date'] = match_datetime.strftime('%A %d %B %Y')
+        fixture_data['time'] = match_datetime.strftime('%Hh%M')
+        print(fixture_data['matchday'])
     return render_template(
         'page.html',
         urlusername=urlusername,
